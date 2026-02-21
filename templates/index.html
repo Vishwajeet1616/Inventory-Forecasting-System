@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DemandSense AI | Inventory Forecasting</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i> <span>DemandSense AI</span>
+            </div>
+            <ul class="nav-links">
+                <li class="active"><a href="#"><i class="fas fa-home"></i> Forecast</a></li>
+                <li><a href="#"><i class="fas fa-history"></i> History</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header>
+                <h1>Inventory Demand Analysis</h1>
+                <p>Machine Learning powered insights for supply chain optimization.</p>
+            </header>
+
+            <section class="search-section">
+                <form action="/" method="post" class="search-form">
+                    <div class="input-group">
+                        <i class="fas fa-search"></i>
+                        <input type="text" name="stockcode" placeholder="Enter Stock Code (e.g., 85123A)" value="{{ curr_code }}" required>
+                    </div>
+                    <button type="submit" class="btn-predict">Run Forecast</button>
+                </form>
+            </section>
+
+            {% if prediction %}
+            <div class="results-grid">
+                <div class="card kpi-card">
+                    <span class="label">Predicted Next Week</span>
+                    <h2 class="value">{{ prediction.split(':')[1] if 'Units' in prediction else '--' }}</h2>
+                    <span class="trend positive"><i class="fas fa-arrow-up"></i> ML Optimized</span>
+                </div>
+
+                <div class="card chart-card">
+                    <h3>Demand Forecast Projection</h3>
+                    {% if plot_url %}
+                        <img src="data:image/png;base64,{{ plot_url }}" alt="Forecast Chart">
+                    {% else %}
+                        <p class="error-msg">{{ prediction }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="card info-card">
+                    <h3>Model Insights</h3>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Algorithm: <strong>Random Forest Regressor</strong></li>
+                        <li><i class="fas fa-check-circle"></i> Features: 4-Week Rolling Lags</li>
+                        <li><i class="fas fa-check-circle"></i> Status: {% if "Error" in prediction %} Failed {% else %} Success {% endif %}</li>
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+
+</body>
+</html>
